@@ -7,7 +7,7 @@
 <title>ビオラ訪問看護ステーション｜松原市｜24時間対応・精神訪問看護</title>
 <meta name="description" content="松原市のビオラ訪問看護ステーション。24時間対応、精神訪問看護・医療保険・介護保険に対応。ご自宅で安心して療養できるようサポートします。">
 
-<!-- SwiperのCSS -->
+<!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
 <style>
@@ -73,14 +73,39 @@ h2 {
 
 /* Swiper PDF */
 .swiper {
+  position: relative;
   padding: 20px 0;
 }
 
+.swiper-slide {
+  position: relative;
+}
+
+/* iframeのレスポンシブ対応 */
 .swiper-slide iframe {
   width: 100%;
-  height: 600px;
+  height: 80vh; /* スマホでも画面いっぱい */
   border: 1px solid #ccc;
   border-radius: 10px;
+  transform-origin: 0 0; /* 拡大縮小の基準点 */
+}
+
+/* PDF拡大縮小ボタン */
+.pdf-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.pdf-controls button {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 /* フッター */
@@ -177,8 +202,22 @@ biora.houmon@gmail.com
 <!-- Swiper -->
 <div class="swiper">
   <div class="swiper-wrapper">
-    <div class="swiper-slide"><iframe src="rules.pdf"></iframe></div>
-    <div class="swiper-slide"><iframe src="important.pdf"></iframe></div>
+    <!-- PDF1 -->
+    <div class="swiper-slide">
+      <iframe src="rules.pdf"></iframe>
+      <div class="pdf-controls">
+        <button onclick="zoomIn(this)">＋拡大</button>
+        <button onclick="zoomOut(this)">－縮小</button>
+      </div>
+    </div>
+    <!-- PDF2 -->
+    <div class="swiper-slide">
+      <iframe src="important.pdf"></iframe>
+      <div class="pdf-controls">
+        <button onclick="zoomIn(this)">＋拡大</button>
+        <button onclick="zoomOut(this)">－縮小</button>
+      </div>
+    </div>
   </div>
   <!-- 矢印ナビ -->
   <div class="swiper-button-next"></div>
@@ -192,14 +231,29 @@ biora.houmon@gmail.com
 <p>© ビオラ訪問看護ステーション</p>
 </footer>
 
-<!-- SwiperのJS -->
+<!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
-  const swiper = new Swiper('.swiper', {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-  });
+const swiper = new Swiper('.swiper', {
+  slidesPerView: 1,
+  spaceBetween: 20,
+  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+});
+
+// PDF拡大・縮小
+function zoomIn(button){
+  const iframe = button.closest('.swiper-slide').querySelector('iframe');
+  const scale = (iframe.dataset.scale ? parseFloat(iframe.dataset.scale) : 1) + 0.1;
+  iframe.style.transform = `scale(${scale})`;
+  iframe.dataset.scale = scale;
+}
+
+function zoomOut(button){
+  const iframe = button.closest('.swiper-slide').querySelector('iframe');
+  const scale = (iframe.dataset.scale ? parseFloat(iframe.dataset.scale) : 1) - 0.1;
+  iframe.style.transform = `scale(${Math.max(scale, 0.1)})`;
+  iframe.dataset.scale = Math.max(scale, 0.1);
+}
 </script>
 
 </body>
